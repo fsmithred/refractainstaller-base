@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
-version="refractainstaller  9.2.1 (20170127)"
+
+version="refractainstaller  9.2.1 (20170204)"
+
+TEXTDOMAIN=refractainstaller-base
+TEXTDOMAINDIR=/usr/share/locale/
+
 # Copyright 2011-2017 fsmithred@gmail.com
 # Portions may be copyright Dean Linkous and/or David Hare and/or others.
 # Based on refractainstaller-8.0.3 by Dean Linkous
