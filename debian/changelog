@@ -1,0 +1,383 @@
+refractainstaller-base (9.3.0) unstable; urgency=low
+
+  * Exclude /etc/popularity-contest.conf so each install gets new ID.
+  * Added support for uefi install.
+  * Added excludes for /usr/lib/live where /lib is symlink.
+  * Added no-format option to cli installer.
+  
+ -- fsmithred <fsmithred@gmail.com>  Sun, 24 Sep 2017 21:55:00 -0400
+
+
+refractainstaller-base (9.2.1) unstable; urgency=low
+
+  * Fixed regression. disable_auto_console gets set with disable_auto_desktop again.
+  * Added support for text translations.
+  * If swap partition exists, script asks to use it or not.
+  * Removed obsolete code relating to clamav.
+  
+ -- fsmithred <fsmithred@gmail.com>  Thu, 16 Feb 2017 11:42:00 -0500
+
+
+
+refractainstaller-base (9.2.0) unstable; urgency=low
+
+  * Script exits with warning if started on uefi system.
+  
+ -- fsmithred <fsmithred@gmail.com>  Tue, 20 Sep 2016 22:30:00 -0400
+
+
+
+refractainstaller-base (9.1.9) unstable; urgency=low
+
+  * Fixed enabled autologin on installed system.
+  
+ -- fsmithred <fsmithred@gmail.com>  Mon, 16 Sep 2016 16:45:00 -0400
+
+
+
+refractainstaller-base (9.1.8) unstable; urgency=low
+
+  * Added support for slim login manager to disable autologin.
+  
+ -- fsmithred <fsmithred@gmail.com>  Sun, 08 May 2016 11:45:00 -0400
+
+
+
+refractainstaller-base (9.1.7) unstable; urgency=low
+
+  * Fixed test for live session.
+  
+ -- fsmithred <fsmithred@gmail.com>  Fri, 05 Feb 2016 10:45:00 -0500
+
+
+
+refractainstaller-base (9.1.6) unstable; urgency=low
+
+  * Set option to choose swap partition in config file.
+  * Moved grub from Depends to Recommends.
+  
+ -- fsmithred <fsmithred@gmail.com>  Wed, 21 Oct 2015 22:28:00 -0400
+
+
+
+refractainstaller-base (9.1.4-1) unstable; urgency=low
+
+  * Removed "/bin/bash" from grub-install to partition.
+
+ -- fsmithred <fsmithred@gmail.com>  Thu, 30 Apr 2015 14:35:00 -0400
+
+
+
+refractainstaller-base (9.1.5) unstable; urgency=low
+
+  * Added grub-efi to deps, for testing uefi install.
+  * Program pauses before grub-install to allow custom commands.
+
+ -- fsmithred <fsmithred@gmail.com>  Thu, 26 Feb 2015 18:23:00 -0500
+
+
+
+refractainstaller-base (9.1.4) unstable; urgency=low
+
+  * Added support for additional separate partitions.
+  * Error log gets copied to primary user's home.
+
+ -- fsmithred <fsmithred@gmail.com>  Wed, 04 Feb 2015 20:40:00 -0500
+
+
+
+refractainstaller-base (9.1.3) unstable; urgency=low
+
+  * Removed '-t type' from mount commands for chroot.
+
+ -- fsmithred <fsmithred@gmail.com>  Mon, 08 Dec 2014 22:30:00 -0500
+
+
+
+refractainstaller-base (9.1.2) unstable; urgency=low
+
+  * Delete /etc/profile.d/zz-live-config_xinit.sh to disable autologin
+  * when there is no display manager
+  
+ -- fsmithred <fsmithred@gmail.com>  Fri, 24 Oct 2014 14:30:00 -0400
+
+
+
+refractainstaller-base (9.1.1) unstable; urgency=low
+
+  * Accepted changes from David Hare in version 9.1.0+dzz3
+  *		-improved handling of sudo and passwords
+  *		-added "$" to yad windows for future translations
+  *		-added rsync filters for lost+found
+  * Option to allow password auth for users on ssh.
+  * Option to allow sudo for halt, reboot, hibernate, suspend.
+
+
+ -- fsmithred <fsmithred@gmail.com>  Tue, 21 Oct 2014 16:45:00 -0400
+ 
+
+
+refractainstaller-base (9.1.0) unstable; urgency=low
+
+  * (refractainstaller)
+  * updated tests for special characters in hostname (for jessie/sid)
+  * Changed the way sudo is handled:
+  *		-remove sudoers.d/live
+  *		-remove username from sudoers
+  *		-add user to sudo group if sudo is desired
+  *
+  * (change-username)
+  * change-username does nothing with sudo.
+  * other options for sudo are in the installer script.
+  *
+  * (loc-timezn.sh)
+  * Fixed bug that checked all locales if no default set.
+  * Fixed duplicate run problem with dpkg-reconfigure.
+  
+  
+ -- fsmithred <fsmithred@gmail.com>  Fri, 28 Mar 2014 10:30:00 -0400
+
+
+
+refractainstaller-base (9.0.9beta6) unstable; urgency=low
+
+  * Pre-install and post-install scripts are switched on in config file
+  * and can be switched off in expert options menu. Errors are sent
+  * to installer's error log.
+  * Added test for live session with warning if not running live.
+  * CLI installer supports installing grub to partition.
+ 
+
+ -- fsmithred <fsmithred@gmail.com>  Fri, 06 Dec 2013 15:00:00 -0500
+
+
+
+refractainstaller-base (9.0.9beta5) unstable; urgency=low
+
+  * Added pre-install scripts.
+
+
+ -- fsmithred <fsmithred@gmail.com>  Tue, 21 Nov 2013 10:30:00 -0500
+
+
+
+refractainstaller-base (9.0.9beta4) unstable; urgency=low
+
+  * Added config for post-install scripts.
+  * Added post-install scripts to set locale and timezone,
+  * and to remove installer icon from desktop.
+  * Changed method to exclude /boot/* and /home/* when they're separate.
+
+
+ -- fsmithred <fsmithred@gmail.com>  Tue, 19 Nov 2013 22:20:00 -0500
+
+
+
+refractainstaller-base (9.0.9beta2) unstable; urgency=low
+
+  * Test for wdm didn't make it into beta1. It's in beta2.
+
+
+ -- fsmithred <fsmithred@gmail.com>  Wed, 30 Oct 2013 19:50:00 -0400
+
+
+
+refractainstaller-base (9.0.9beta1) unstable; urgency=low
+
+  * Drop "--root-directory=/target" from grub-install for jessie/sid.
+  * Changed wording to edit /etc/sudoers. (Not always "last line")
+  * Added debug mode.
+  * No! Not yet! Removed $enable_updatedb to match refractasnapshot gui/base 9.0.9-5
+  * change-username checks for more display managers (tdm, wdm)
+  
+
+ -- fsmithred <fsmithred@gmail.com>  Mon, 21 Oct 2013 09:12:00 -0400
+
+
+
+refractainstaller-base (9.0.8-3) unstable; urgency=low
+
+  * Use /usr/sbin/update-initramfs.orig.initramfs-tools
+  * Changed root-fs and home-fs to root_fs and home_fs
+  * if $new_hostname null; then	new_hostname="$HOSTNAME"
+  
+
+ -- fsmithred <fsmithred@gmail.com>  Sun, 31 Aug 2013 23:00:00 -0400
+ 
+ 
+
+refractainstaller-base (9.0.8-1) unstable; urgency=low
+
+  * Added /etc/fstab.d/* to excludes
+
+
+ -- fsmithred <fsmithred@gmail.com>  Tue, 26 Mar 2013 11:15:00 -0500 
+
+
+
+refractainstaller-base (9.0.8) unstable; urgency=low
+
+  * Fixed bug that left no hostname if you didn't choose to change it.
+
+
+ -- fsmithred <fsmithred@gmail.com>  Tue, 05 Feb 2013 06:05:00 -0500
+
+
+
+refractainstaller-base (9.0.7) unstable; urgency=low
+
+  * Added /lib/live/mount and /run/* to excludes file
+  * Option to change hostname now checks for illegal characters.
+  * Removed dead code and useless echoes.
+  * Removed some zenity windows from the yad version.
+
+
+ -- fsmithred <fsmithred@gmail.com>  Fri, 14 Dec 2012 10:55:00 -0500
+
+
+
+refractainstaller-base (9.0.6-1) unstable; urgency=low
+
+  * Removed ALL quotes from uuid in fstab.
+
+
+ -- fsmithred <fsmithred@gmail.com>  Tue, 13 Nov 2012 10:29:00 -0500
+
+
+
+refractainstaller-base (9.0.6) unstable; urgency=low
+
+  * Excluded /lib/live/overlayfs, image, rootfs and /etc/fstab.d for sid.
+  * Removed quotes from uuid in fstab.
+  * Removed code to disable autologin from change-username. It's in
+  * the installer.
+
+
+ -- fsmithred <fsmithred@gmail.com>  Mon, 12 Nov 2012 10:29:00 -0500
+ 
+ 
+
+refractainstaller-base (9.0.5-3) unstable; urgency=low
+
+  * Fixed code for $enable_freshclam and $root_ssh
+  * Fixed code for $pmount_fixed and $enable_updatedb
+  * Restored separate rsync excludes file for separate /home and /boot.
+  
+
+ -- fsmithred <fsmithred@gmail.com>  Sun, 05 Aug 2012 21:29:00 -0400
+
+
+
+refractainstaller-base (9.0.5-2) unstable; urgency=low
+
+  * Removed separate rsync excludes file for separate /home and /boot.
+  * Added setting for rsync excludes file to config file.
+  * Added comments to config file.
+  * Added refractainstaller_configuration function.
+  * Added /home/*/.gvfs to rsync excludes
+  
+
+ -- fsmithred <fsmithred@gmail.com>  Sun, 22 Jul 2012 11:29:00 -0400
+
+
+
+refractainstaller-base (9.0.5-1) unstable; urgency=low
+
+  * Added config file with options for swapfile size, and to enable
+  * or disable pmount for fixed drives, updatedb, freshclam, and root
+  * login through ssh.
+  * added code to change-username to handle lightdm.
+  
+    
+ -- fsmithred <fsmithred@gmail.com>  Sun, 24 Jun 2012 11:29:00 -0400
+
+
+
+refractainstaller-base (9.0.5) unstable; urgency=low
+
+  * freshclam gets re-enabled if it was disabled by snapshot.
+  * Made variables for swapfile block size and count.
+  * Disable console autologin (replace /etc/inittab with stock debian)
+  
+    
+ -- fsmithred <fsmithred@gmail.com>  Tue, 19 Jun 2012 20:29:00 -0400
+   
+  
+
+refractainstaller-base (9.0.4) unstable; urgency=low
+
+  * Don't allow use of uuid in fstab if using encryption.
+  * Added option to change hostname.
+  * Disable autologin in gdm, gdm3, kde3, kde4, trinity, lightdm.
+
+ -- fsmithred <fsmithred@gmail.com>  Tue, 12 Jun 2012 12:45:00 -0400
+
+
+
+refractainstaller-base (9.0.3) unstable; urgency=low
+
+  * Added option to use uuid in fstab
+  * Added separate rsync excludes file for separate /home and /boot.
+
+ -- fsmithred <fsmithred@gmail.com>  Mon, 28 May 2012 08:00:00 -0400
+
+
+
+refractainstaller-base (9.0.2-2) unstable; urgency=low
+
+  * Comment the line in /etc/pmount.allow, so that users can not
+    mount/unmount fixed drives when running the installed system.
+
+
+ -- fsmithred <fsmithred@gmail.com>  Sun, 08 Jan 2012 08:00:00 -0500
+
+
+
+refractainstaller-base (9.0.2) unstable; urgency=low
+
+  * Output of grub-install gets redirected to error log.
+  * Added code to change-username for changing the user's real name.
+  * change-username can edit config files in ~/.local to change the old
+    user name to the new one.
+
+ -- fsmithred <fsmithred@gmail.com>  Wed, 02 Nov 2011 11:34:00 -0400
+
+
+
+refractainstaller-base (9.0.1-2) unstable; urgency=low
+
+  * Added grub-legacy as optional dependency.
+
+ -- fsmithred <fsmithred@gmail.com>  Thu, 29 Sep 2011 11:34:00 -0400
+
+
+
+refractainstaller-base (9.0.1-1) unstable; urgency=low
+
+  * Script makes sure /usr/bin/updatedb.mlocate is executable since it
+  was turned off by refractasnapshot for live-CD.
+  * added tests in cli version - if gparted not installed or if not
+  running in xsession, option to use cfdisk or exit is offered.
+	
+ -- fsmithred <fsmithred@gmail.com>  Tue, 06 Sep 2011 17:07:22 -0400
+
+
+
+refractainstaller (9.0.0) 
+
+  * refractainstaller-8.0.3 was converted to a bash script. Options
+  were added for more diverse system configurations (separate /home,
+  separate /boot, and disk encryption.) Graphical environment was
+  added with zenity.
+	
+  * refractainstaller-new and refractainstaller.sh-nogui (20110410)
+  are succeeded by (refractainstaller and refractainstaller.sh) or
+  (refractainstaller-gui and refractainstaller) version 9.0.0 
+  to replace the old python versions.
+	
+  * Added --help and --version options to cli version.
+	
+  * installer_exclude.list now copied to $(pwd)/installer_exclude.list
+  instead of ./exclude.list
+
+ -- fsmithred <fsmithred@gmail.com>   April 2011

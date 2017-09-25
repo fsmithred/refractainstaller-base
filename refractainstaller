@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
-version="refractainstaller  9.2.1 (20170204)"
+version="refractainstaller  9.3.0 (20170916)"
 
+. gettext.sh
 TEXTDOMAIN=refractainstaller-base
-TEXTDOMAINDIR=/usr/share/locale/
+export TEXTDOMAIN
+TEXTDOMAINDIR=/usr/share/locale
+export TEXTDOMAINDIR
 
 # Copyright 2011-2017 fsmithred@gmail.com
 # Portions may be copyright Dean Linkous and/or David Hare and/or others.
@@ -35,8 +38,7 @@ show_help () {
 help_text=$"
 	Usage:  $0  [option]
 	
-	Run with no options to install a running live-CD or live-usb-hdd
-	to a hard drive. 
+	Run with no options to install a live-CD/DVD/USB to hard drive. 
 	
 	If you want to use the graphical version, run refractainstaller-gui
 	from a terminal or run Refracta Installer from the System menu.
@@ -73,7 +75,7 @@ done
 # Check that user is root.
 [[ $(id -u) -eq 0 ]] || { echo -e $"\t You need to be root!\n" ; exit 1 ; }
 
-
+###### NOTE: This script may no longer work without a config file. Untested. -fsr 2017-09-14
 refractainstaller_configuration () {
 if [[ -f $configfile ]]; then
     source $configfile
@@ -92,7 +94,6 @@ swapfile_blocksize=${swapfile_blocksize:="1024"}
 swapfile_count=${swapfile_count:="262144"}
 pmount_fixed=${pmount_fixed:="no"}
 enable_updatedb=${enable_updatedb:="yes"}
-enable_freshclam=${enable_freshclam:="yes"}
 root_ssh=${root_ssh:="no"}
 }
 
@@ -108,30 +109,6 @@ if [[ $DEBUG = "yes" ]] ; then
 fi
 
 
-###  TEMPORARY WARNING  ###  Remove this when uefi installer is ready.
-#
-# Abort if the system has booted with UEFI. This installer won't do it.
-uefi_warning () {
-
-if [[ -d /sys/firmware/efi ]]; then
-	echo $"
-  Warning. It appears you have booted on a system that
-  uses UEFI. This installer doesn't know how to do that.
-
-If you have a good understanding of UEFI, you can try the 
-experimental uefi installer: /usr/bin/refractainstaller-uefi. 
-
-Read the uefi_install.readme first! 
-See: /usr/lib/refractainstaller/uefi_install.readme
-"
-	exit 0
-fi
-
-}
-# You really could use this script for a uefi install.
-# If you know what you're doing, comment out the next line.
-uefi_warning
-
 # Check to be sure we're running a live session; give warning if not.
 if [[ ! -d /lib/live/mount/medium ]] && [[ ! -d /lib/live/mount/findiso ]] && [[ ! -d /lib/live/mount/fromiso ]] && [[ ! -d /lib/live/mount/persistence ]] ; then
 	echo $" ###	WARNING: Not running from live-CD or live-USB	### 
@@ -144,7 +121,7 @@ fi
 
 # Run pre-install scripts if enabled in config file.
 if [[ $run_preinstall = "yes" ]] ; then
-	for file in /var/lib/refractainstaller/pre-install/* ; do
+	for file in /usr/lib/refractainstaller/pre-install/* ; do
 		if [[ -x $file ]] ; then
 			bash $file
 		fi
@@ -203,14 +180,180 @@ if ! [[ -f  $rsync_excludes ]] ; then
 - /etc/mtab
 - /home/snapshot
 - /home/*/.gvfs
+- /var/lib/dbus/machine-id
+
+# Added for newer version of live-config/live-boot
+# in sid (to become Jessie)
+- /lib/live/overlay
+- /lib/live/image
+- /lib/live/rootfs
+- /lib/live/mount
+- /run/*
+
+# Added for symlink /lib
+- /usr/lib/live/overlay
+- /usr/lib/live/image
+- /usr/lib/live/rootfs
+- /usr/lib/live/mount
+
 EOF
 check_exit
 chmod 666 "$rsync_excludes"
 fi 
 
 
+###  UEFI TESTS
 
-# Partition a disk
+# Test for efi boot
+# Test for esp partition
+# Test for grub version
+
+grubversion=$(dpkg -l | egrep "ii|hi" | grep -v bin | grep -v doc | awk '$2 ~ "grub-[eglp]" { print $2}')
+
+show_uefi_help () {
+
+	less /usr/lib/refractainstaller/uefi_install.readme
+
+	while true ; do		
+		echo $"
+	Now that you know what you're doing...
+	
+	1) Continue
+	2) Abort the installation
+"
+	read ans
+		case "$ans" in
+			1) break ;;
+			2) exit 0 ;;
+		esac
+	done
+
+}
+
+# Check for UEFI boot and EFI partition
+if [[ -d /sys/firmware/efi ]]; then
+	uefi_boot="yes"
+	esp_count=$(fdisk -l | awk '/EFI System/ { print $0 }' | wc -l)
+
+	if [ "$esp_count" -eq 1 ] ; then
+		esp_dev=$(fdisk -l | awk '/EFI System/ { print $1 }')
+		esp_dev_message=$" EFI partition found at ${esp_dev}
+ If this is not on the first hard disk, something may be wrong,
+ and you should investigate the situation."
+	else
+		must_choose_esp="yes"
+		if [ "$esp_count" -eq 0 ] ; then
+			esp_dev_message=$" There is no EFI partition. You will need to create one."
+		elif [ "$esp_count" -gt 1 ] ; then
+			esp_dev_message=$" More than one EFI partition was detected. You will need to select one. Normally, it's on the first hard disk."
+
+		fi
+	fi
+	
+	if ! [[ "$grubversion" =~ grub-efi ]] ; then
+		grub_package="grub-efi*.deb"  # make sep vars for grub-x and grub-x-bin. Maybe sep. messages. Or sep. dirs?
+		grub_debs=$(ls "$grub_package_dir"/${grub_package})
+		if [[ -n "$grub_debs" ]] ; then    # don't quote $grub_package here.
+			grub_package_message=$"grub package(s) found in $grub_package_dir"
+		fi
+		grub_efi_warning=$"			### WARNING ### 
+	grub-efi is not installed. 
+
+	If you have the deb packages, you will be given a chance to install 
+	them into the new system.
+
+	${grub_package_message}
+${grub_debs}
+"
+	fi
+	
+	while true ; do
+		echo $"
+	Read the Help. 
+
+	${grub_efi_warning}
+	
+	${esp_dev_message}
+	
+	You can skip creating the uefi bootloader, finish the installation, 
+	and use another installed linux to boot this one.
+	
+	DO NOT FORMAT A PRE-EXISTING EFI PARTITION!!!
+
+	1) Help 
+	2) Continue
+	3) Abort the installation
+		"
+		read ans
+		case "$ans" in 
+			1) show_uefi_help ; break ;;
+			2) break ;;
+			3) exit 0 ;;
+		esac
+	done
+		
+else
+	# not uefi, do bios install.
+	esp_list=$(fdisk -l | awk '/EFI System/ { print $0 }')
+	if [[ -n "$esp_list" ]] ; then
+		esp_dev_message=$"EFI partition(s) found. Do not format any EFI
+partitions if you plan to use them for uefi booting.
+${esp_list}
+"
+	fi
+
+###### grub-pc and grub-pc-bin get installed out of order
+###### Need to make $grub_package and $grub_bin_package
+###### and install them in correct order.
+	if  [[ "$grubversion" =~ grub-efi ]] || [[ -z "$grubversion" ]] ; then
+		grub_package="grub-pc*.deb"
+		grub_debs=$(ls "$grub_package_dir"/${grub_package})  # don't quote $grub_package here.
+		if [[ -n "$grub_debs" ]] ; then    
+			grub_package_message=$"grub package(s) found in $grub_package_dir"
+		fi
+		grub_efi_warning=$"			### WARNING ### 
+	grub-pc is not installed but you booted in bios mode.
+
+	If you have the grub-pc deb packages, you will be given a chance to
+	install them into the new system.
+
+	${grub_package_message}
+${grub_debs}
+"
+	
+		while true ; do
+		echo $"
+	${grub_efi_warning}
+	
+	${esp_dev_message}
+
+	You can skip installing a bootloader, finish the installation, and
+	use another installed linux to boot this one.
+	
+
+	1) Continue
+	2) Abort the installation
+		"
+		read ans
+		case "$ans" in 
+			1) break ;;
+			2) exit 0 ;;
+		esac
+	done
+	fi
+fi
+
+
+# Partition a disk			#####  Need to format new efi partition.
+
+
+
+if [[ $uefi_boot = "yes" ]] ; then
+	cli_partition_tool="cgdisk"
+else
+	cli_partition_tool="cfdisk"
+fi
+
 while true; do
     echo -n $" 
  You need to have a partition ready for the installation. If you 
@@ -220,7 +363,7 @@ while true; do
  
  Choices (enter number):
      1. GParted
-     2. cfdisk
+     2. $cli_partition_tool
      3. No thanks, I already have a partition prepared. Continue.
      4. I'd like to exit the script now.
     "
@@ -229,15 +372,19 @@ while true; do
       1) if ! [[ -f /usr/sbin/gparted ]]; then
 			while true; do
 				echo $"
- GParted is not installed. Would you like to use cfdisk instead?
+ GParted is not installed. Would you like to use $cli_partition_tool instead?
 				
-	Yes (use cfdisk)
+	Yes (use $cli_partition_tool)
 	No (exit the script)
 "
 				
 				read ans
 				case $ans in
-				  [Yy]*) cfdisk ; break ;;
+				  [Yy]*) "$cli_partition_tool" 					# need function here. If no partition table, must exit and run gdisk or parted.
+						if [[ $uefi_boot = "yes" ]] ; then
+							ask_format_efi
+						fi
+						break ;;
 				  [Nn]*) exit 0 ;;
 				esac
 			done
@@ -245,15 +392,19 @@ while true; do
 			while true; do
 				echo $"
  GParted requires a graphical environment.
- Would you like to use cfdisk instead?
+ Would you like to use $cli_partition_tool instead?
 				
-	Yes (use cfdisk)
+	Yes (use ${cli_partition_tool})
 	No (exit the script)
 "
 				
 				read ans
 				case $ans in
-				  [Yy]*) cfdisk ; break ;;
+				  [Yy]*) "$cli_partition_tool"
+						if [[ $uefi_boot = "yes" ]] ; then
+							ask_format_efi
+						fi
+						break ;;
 				  [Nn]*) exit 0 ;;
 				esac
 			done
@@ -262,7 +413,7 @@ while true; do
 			gparted
 		 fi
 		 break ;;
-      2) cfdisk ; break ;;
+      2) "$cli_partition_tool" ; break ;;
       3) break ;;
       4) exit 0 ;;
     esac
@@ -276,33 +427,111 @@ while true; do
  are available? (y/N): "
     read ans
     case $ans in
-      [Yy]*) fdisk -l ; break ;;
+      [Yy]*) fdisk -l ; sleep 5 ; break ;;
       *) break ;;
     esac
 done
 
 
+ask_format_efi () {
+
+	while true ; do
+		echo $"
+ WARNING:  The selected partition does not contain a FAT32 filesystem.
+ If you just created a new efi partition (ef00), you need to format it.  
+ 
+	y) Yes, create a fat32 partition on $esp_dev
+	n) No, proceed without a bootloader.
+	x) Abort the install to investigate the situation.
+ 
+ Format new efi partition? (y/n/x): "
+ 
+		read ans
+		case "$ans" in
+			[Yy]*) mkfs.vfat "$esp_dev" ; break ;;
+			[Nn]*) break ;;
+			[Xx]*) exit 0 ;;
+		esac
+	done
+
+}
+
+
+choose_esp () {
+
+	esp_info=$(fdisk -l | awk '/EFI System/ { print $0 }')
+	esp_dev_list=$(fdisk -l | awk '/EFI System/ { print $1 }')
+	esp_count=$(fdisk -l | awk '/EFI System/ { print $0 }' | wc -l)
+	
+
+	if [ "$esp_count" -eq 0 ] ; then
+		esp_dev_message=$"There is no EFI partition. You will need to create one."
+		echo "$esp_dev_message"
+		exit 1
+	else
+			echo $"
+******************************************************
+
+ Enter the device name for the EFI partition to use.
+ (example: /dev/sda1)
+
+  $esp_info
+
+enter device:"
+			read esp_dev
+		if ! echo "$esp_dev_list" | grep -q "$esp_dev"; then
+			echo $"Not a valid EFI partition.
+
+Press ctrl-c to exit or ENTER to proceed without a bootloader.
+DO NOT SELECT AN EFI PARITION FOR ANOTHER PURPOSE."
+			esp_dev=""
+		fi
+		
+		if ! blkid -c /dev/null -s TYPE "$esp_dev" | grep -q "vfat" ; then
+			ask_format_efi
+		fi
+	fi
+
+}
+
+if [[ $must_choose_esp = "yes" ]] ; then  # do if [[ $uefi_boot = "yes" ]]
+	choose_esp
+fi
+
+
 # Select location for bootloader.
 # If location is entered but does not exist, then exit with error.
+select_grub_dev () {
+	echo -n $"
+	
+	 Where would you like the GRUB bootloader to be installed?
+	 (probably a drive, like /dev/sda) 
+	 
+	 If you don't want to install the bootloader, leave this blank.
+	 You will need to do some manual configuration after the install.:
+	 "
+	read grub_dev
+	
+	if [[ -n $grub_dev ]] ; then
+	    [[ -b $grub_dev ]] || { echo $"$grub_dev is not a block device. " ; exit 1 ; }
+	fi
+	
+	# If you enter a partition instead of a drive for grub_dev...  ##### NOT FOR NVME DISKS (or >9 partitions)
+	if [[ ${grub_dev:8:1} = [1-9] ]] ; then
+		grub_partition="$grub_dev"
+	fi
 
-echo -n $"
+}
 
- Where would you like the GRUB bootloader to be installed?
- (probably a drive, like /dev/sda) 
- 
- If you don't want to install the bootloader, leave this blank.
- You will need to do some manual configuration after the install.:
- "
-read grub_dev
-
-if [[ -n $grub_dev ]] ; then
-    [[ -b $grub_dev ]] || { echo $"$grub_dev is not a block device. " ; exit 1 ; }
+if [[ $uefi_boot = "yes" ]] ;then
+	grub_dev="efi"
+	if [[ -z "$esp_dev" ]] ; then
+		grub_dev=""
+	fi
+elif [[ -z "$grub_package" ]] ; then
+	select_grub_dev
 fi
 
-# If you enter a partition instead of a drive for grub_dev...
-if [[ ${grub_dev:8:1} = [1-9] ]] ; then
-	grub_partition="$grub_dev"
-fi
 
 
 # Enter device for /boot partition or skip. If one is entered, test it.
@@ -326,9 +555,20 @@ if ! [[ -z $boot_dev ]] && ! [[ -b $boot_dev ]] ; then
     read -p " "
 fi
 
+if [[ -n $boot_dev ]] ; then
+	if [[ $boot_dev = $esp_dev ]] ; then
+		echo $" EFI partition and /boot partition cannot be the same.
+ You may continue and install without a separate boot partition,
+ or you can hit ctrl-c to exit,"
+	    boot_dev=
+	    echo $"Press ENTER when you're ready to continue"
+	    read -p " "
+	fi
+fi
 
 # Choose filesystem type for /boot if it exists.
-if [[ -n $boot_dev ]] ; then
+
+choose_fs_boot () {
     while true; do
         echo -n $"
     
@@ -346,6 +586,15 @@ if [[ -n $boot_dev ]] ; then
           4) fs_type_boot="ext4" ; break ;;
         esac
     done
+
+}
+
+if [[ -n $boot_dev ]]; then
+	if [[ $no_format = "yes" ]]; then 
+		fs_type_boot=$(blkid -s TYPE "$boot_dev" | awk -F"\"" '{ print $2 }')
+	else
+		choose_fs_boot
+	fi
 fi
 
 
@@ -360,81 +609,93 @@ read install_dev
 [[ -b $install_dev ]] || { echo $"$install_dev does not exist! " ; exit 1 ; }
 
 # Choose filesystem type for OS.
-while true; do
-    echo -n $"
-    
+choose_fs_os () {
+
+	while true; do
+	    echo -n $"
+	    
  What type of filesystem would you like on $install_dev?
  
  Choices (enter number):
     2) ext2
     3) ext3
     4) ext4
-   "
-    read ans
-    case $ans in
-      2) fs_type_os="ext2" ; break ;;
-      3) fs_type_os="ext3" ; break ;;
-      4) fs_type_os="ext4" ; break ;;
-    esac
-done
-
-
-# Decide if OS should be encrypted
-while true; do
-    echo -n $"
-
+"
+	    read ans
+	    case $ans in
+	      2) fs_type_os="ext2" ; break ;;
+	      3) fs_type_os="ext3" ; break ;;
+	      4) fs_type_os="ext4" ; break ;;
+	    esac
+	done
+	
+	
+	
+	# Decide if OS should be encrypted
+	while true; do
+	    echo -n $"
+	
  Do you want the operating system on an encrypted partition?
  (yes or no)
- "
-    read ans
-    case $ans in
-      [Yy]*) encrypt_os="yes"
-             # test for cryptsetup
-             if ! [[ -f /sbin/cryptsetup ]]; then
-                 while true; do
-                     echo $" Cryptsetup is not installed. You need to
+	 "
+	    read ans
+	    case $ans in
+	      [Yy]*) encrypt_os="yes"
+	             # test for cryptsetup
+	             if ! [[ -f /sbin/cryptsetup ]]; then
+	                 while true; do
+	                     echo $" Cryptsetup is not installed. You need to
  install it and run the command, 'sudo modprobe dm-mod'
  before you can use encryption.Do you want to proceed
  without encrypting the partition?
  (y or n)
- 
+	 
       Yes) Proceed without encrypting the partition
        No) Exit
        "
-                    read ans
-                    case $ans in
-                      [Yy]*) encrypt_os="no" ; break 2 ;;
-                      [Nn]*) exit 1 ;;
-                    esac
-                done
-             fi
-             # end test for cryptsetup
-             #
-             # test to make sure there's a separate /boot partition
-             if [[ -z $boot_dev ]] ; then
-                 while true; do
-                     echo $" You MUST have a separate, unencrypted /boot partition
+	                    read ans
+	                    case $ans in
+	                      [Yy]*) encrypt_os="no" ; break 2 ;;
+	                      [Nn]*) exit 1 ;;
+	                    esac
+	                done
+	             fi
+	             # end test for cryptsetup
+	             #
+	             # test to make sure there's a separate /boot partition
+	             if [[ -z $boot_dev ]] ; then
+	                 while true; do
+	                     echo $" You MUST have a separate, unencrypted /boot partition
  if you intend to boot an encrypted operating system.
  You can proceed without encrypting the root filesystem,
  or you can exit and start over.Do you want to proceed
  without encrypting the partition?
  (y or n)
- 
+	 
       Yes) Proceed without encrypting the partition
        No) Exit
-       "
-                    read ans
-                    case $ans in
-                      [Yy]*) break ;;
-                      [Nn]*) exit 1 ;;
-                    esac
-                done
-            fi
-            # end test for separate /boot partition
-            break ;;
-      [Nn]*) encrypt_os="no"  ; break ;;
-    esac
-done
+	       "
+	                    read ans
+	                    case $ans in
+	                      [Yy]*) break ;;
+	                      [Nn]*) exit 1 ;;
+	                    esac
+	                done
+	            fi
+	            # end test for separate /boot partition
+	            break ;;
+	      [Nn]*) encrypt_os="no"  ; break ;;
+	    esac
+	done
+
+}
+
+
+if [[ $no_format = "yes" ]]; then 
+	fs_type_os=$(blkid -s TYPE "$install_dev" | awk -F"\"" '{ print $2 }')
+else
+	choose_fs_os
+fi
 
 
 # Enter device for /home partition or skip. If one is entered, test it.
@@ -460,7 +721,7 @@ if [[ -n $home_dev ]] && ! [[ -b $home_dev ]] ; then
 fi
 
 # Choose filesystem type for /home if needed
-if [[ -n $home_dev ]] ; then
+choose_fs_home () {
     while true; do
         echo -n $"
         
@@ -478,11 +739,9 @@ if [[ -n $home_dev ]] ; then
           4) fs_type_home="ext4" ; break ;;
         esac
     done
-fi
 
 
 # Decide if /home should be encrypted
-if [[ -n $home_dev ]] ; then
     while true; do
         echo -n $"
         
@@ -516,26 +775,40 @@ if [[ -n $home_dev ]] ; then
       [Nn]*) encrypt_home="no"  ; break ;;
     esac
     done
+
+}
+
+if [[ -n $home_dev ]]; then
+	if [[ $no_format = "yes" ]]; then 
+		fs_type_home=$(blkid -s TYPE "$home_dev" | awk -F"\"" '{ print $2 }')
+	else
+		choose_fs_home
+	fi
 fi
 
 
 # Show available swap partitions and choose one.
 choose_swap () {
-swap_info=$(/sbin/blkid |grep swap | awk '{print "\n" $0 }')
-swap_device_list=$(/sbin/blkid |grep swap | awk -F: '{print "\n" $1 }')
-echo $"List of swap partitions available
-$swap_info
-"
 
-	select opt in $swap_device_list ; do
-		swap_dev="$opt"
-		break
-	done
+	echo $"
+ List of swap partitions available
+ $swap_info
+
+Enter the swap device to use. If you don't enter a device name,
+a swapfile will be used instead.
+"
+	read swap_dev
+	if ! [ -b "$swap_dev" ] ; then
+		use_existing_swap="no"
+	fi
 
 }
 
+swap_info=$(/sbin/blkid | awk '/TYPE="swap"/ {print "\n" $0 }')
+swap_device_list=$(/sbin/blkid -s TYPE | awk -F: '/swap/ {print "\n" $1 }')
 
-if [[ $use_existing_swap = "yes" ]]; then
+if [[ -n "$swap_device_list" ]] ; then
+	use_existing_swap="yes"
     choose_swap
 fi
 
@@ -545,18 +818,19 @@ while true; do
 	echo -n $"
  Would you like fstab to use the UUID to identify filesystems?
  This is useful if your drive order changes between reboots.
-	(y/N)
+	[Default has changed] (Y/n)
  " 
  	read ans
 	case $ans in
-		[Yy]*) 	if [[ $encrypt_os = "yes" ]] || [[ $encrypt_home = "yes" ]]; then
-					uuid_message="--> UUIDs in fstab won't work with encrypted filesystems and
+		[Nn]*)	break ;;
+		*) 	if [[ $encrypt_os = "yes" ]] || [[ $encrypt_home = "yes" ]]; then
+				uuid_message=$"--> UUIDs in fstab won't work with encrypted filesystems and
     will not be used. Edit fstab manually after the installation."
-				else
-					use_uuid="yes"
-				fi
-				break ;;
-		*)	break ;;
+			else
+				use_uuid="yes"
+			fi
+			break ;;
+
 	esac
 done
 
@@ -614,28 +888,30 @@ select_hostname
 new_hostname=${new_hostname:="$HOSTNAME"}
 
 # Show a summary of what will be done
-if [[ -z $grub_dev ]] ; then
-    grub_dev_message="--> Bootloader will not be installed."
+if [[ $grub_dev = "efi" ]] ; then
+	grub_dev_message=$"--> EFI bootloader can be installed."
+elif [[ -z $grub_dev ]] ; then
+    grub_dev_message=$"--> Bootloader will not be installed."
 else
-    grub_dev_message="--> Bootloader will be installed in $grub_dev"
+    grub_dev_message=$"--> Bootloader will be installed in $grub_dev"
 fi
 
 if [[ $encrypt_os = yes ]] ; then
-    os_enc_message=", and will be encrypted."
+    os_enc_message=$", and will be encrypted."
 fi
 
 if [[ -z $home_dev ]] ; then
-    home_dev_message="--> /home will not be on a separate partition."
+    home_dev_message=$"--> /home will not be on a separate partition."
 else
-    home_dev_message="--> /home will be installed on $home_dev and formatted as $fs_type_home"
+    home_dev_message=$"--> /home will be installed on $home_dev and formatted as $fs_type_home"
 fi
 
 if [[ -n $home_dev ]] && [[ $encrypt_home = yes ]] ; then
-    home_enc_message=", and will be encrypted."
+    home_enc_message=$", and will be encrypted."
 fi
 
 if [[ -n $boot_dev ]] ; then
-    boot_dev_message="--> /boot will be installed on $boot_dev and formatted as $fs_type_boot."
+    boot_dev_message=$"--> /boot will be installed on $boot_dev and formatted as $fs_type_boot."
 fi
 
 
@@ -740,7 +1016,7 @@ cleanup
 # make mount point, format, adjust reserve and mount
 # install_dev must maintain the device name for cryptsetup
 # install_part will be either device name or /dev/mapper name as needed.
-echo -e $"\n Creating filesystem on $install_dev...\n"
+echo -e $"\n Preparing $install_dev...\n"
 mkdir /target ;  check_exit
 if [[ $encrypt_os = yes ]] ; then
     echo $" You will need to create a passphrase."
@@ -750,9 +1026,13 @@ if [[ $encrypt_os = yes ]] ; then
     install_part="/dev/mapper/root_fs"
 else
     install_part="$install_dev"
-fi 
-mke2fs -t $fs_type_os "$install_part" ; check_exit 
-tune2fs -r 10000 "$install_part" ; check_exit 
+fi
+
+if [[ $no_format != "yes" ]]; then
+	mke2fs -t $fs_type_os "$install_part" ; check_exit 
+	tune2fs -r 10000 "$install_part" ; check_exit 
+fi
+
 mount "$install_part" /target ; check_exit 
 
 # make mount point for separate home if needed
@@ -760,7 +1040,7 @@ mount "$install_part" /target ; check_exit
 if [[ -n $home_dev ]] ; then
     echo $"
     
- Creating filesystem on $home_dev...
+ Preparing $home_dev...
     "
     mkdir /target_home ; check_exit
     if [[ $encrypt_home = yes ]]; then
@@ -776,9 +1056,11 @@ if [[ -n $home_dev ]] ; then
     else
         home_part=$home_dev
 	fi
-    mke2fs -t $fs_type_home "$home_part" ; check_exit
-    tune2fs -r 10000 "$home_part" ; check_exit
-    mount "$home_part" /target_home ; check_exit
+	if [[ $no_format != "yes" ]]; then
+		mke2fs -t $fs_type_home "$home_part" ; check_exit
+		tune2fs -r 10000 "$home_part" ; check_exit
+	fi
+	mount "$home_part" /target_home ; check_exit
 	sep_home_opt="--exclude=/home/*"
 fi
 
@@ -786,10 +1068,12 @@ fi
 # and add /boot/* to the excludes list if it's not already there
 # allow default for reserved blocks (don't need tune2fs here)
 if [[ -n $boot_dev ]] ; then
-    mkdir /target_boot ; check_exit
-    mke2fs -t $fs_type_boot $boot_dev ; check_exit
-    mount $boot_dev /target_boot
-    sep_boot_opt="--exclude=/boot/*"
+	mkdir /target_boot ; check_exit
+	if [[ $no_format != "yes" ]]; then
+		mke2fs -t $fs_type_boot $boot_dev ; check_exit
+	fi
+	mount $boot_dev /target_boot
+	sep_boot_opt="--exclude=/boot/*"
 fi
 
 
@@ -834,7 +1118,7 @@ fi
 # Disable auto-login
 
 while true; do
-	echo -n $" Disable auto-login?
+	echo -e $" \n\nDisable auto-login?
 	(Y/n)
 	"
 	read ans
@@ -998,7 +1282,7 @@ if [[ -f /target/usr/sbin/update-initramfs.debian ]] ; then
 fi
 
 # Change hostname
-if ! [[ $new_hostname = $HOSTNAME ]]; then
+if ! [[ $new_hostname = "$HOSTNAME" ]]; then
 	sed -i "s/$HOSTNAME/$new_hostname/" /target/etc/hostname
 	sed -i "s/$HOSTNAME/$new_hostname/g" /target/etc/hosts
 fi
@@ -1068,23 +1352,6 @@ if [[ $encrypt_home = yes ]] ; then
 fi
 
 
-# mount stuff so grub will behave (so chroot will work)
-echo -e $"\n Mounting tmpfs and proc...\n"
-mount --bind /dev/ /target/dev/ ; check_exit 
-mount --bind /proc/ /target/proc/ ; check_exit 
-mount --bind /sys/ /target/sys/ ; check_exit 
-
-
-# Re-enable freshclam if it was disabled by snapshot 		##### This ain't perfect, but it works!
-if type -p freshclam ; then
-	if [[ $enable_freshclam = "yes" ]] ; then
-		if ! [[ -h /target/etc/rc2.d/S02clamav-freshclam ]] ; then
-			chroot /target update-rc.d clamav-freshclam defaults
-		fi
-	fi
-fi
-
-
 # Allow users to login to ssh with passwords if desired.
 # Allow root login only with auth keys.
 # or do nothing.
@@ -1099,16 +1366,44 @@ elif [[ -n "$ssh_pass" ]] ; then
 fi
 
 
-install_grub () {
-# Setup GRUB 
-echo -e $"\n Setting up grub bootloader.. Please wait..\n"
 
-# If /boot is separate partition, need to mount it in chroot for grub
+# mount stuff so grub will behave (so chroot will work)
+echo -e $"\n Mounting tmpfs and proc...\n"
+mount --bind /dev/ /target/dev/ ; check_exit 
+mount --bind /proc/ /target/proc/ ; check_exit 
+mount --bind /sys/ /target/sys/ ; check_exit 
+
+# If /boot is separate partition, need to mount it in chroot for grub and for efi
 if [[ -n $boot_dev ]] ; then
     chroot /target mount $boot_dev /boot
 fi
 
-grubversion=$(dpkg -l | egrep "ii|hi" | grep -v bin | grep -v doc | awk '$2 ~ "grub-[glp]" { print $2}')
+# This test is not complete and should probably be done earlier. grub_dev="efi" above
+if [[ -n "$esp_dev" ]] ; then
+	uefi_ready="yes"
+fi
+
+# add entry for esp_dev to fstab if needed
+if [[ $uefi_ready = "yes" ]] ; then
+	if [[ $use_uuid = "yes" ]]; then
+		esp_part="$(/sbin/blkid -s UUID $esp_dev | awk '{ print $2 }' | sed 's/\"//g')"
+	else
+		esp_part="$esp_dev"
+	fi
+    echo -e $"\n Adding esp entry to fstab...\n"
+    echo -e "$esp_part\t/boot/efi\tvfat\tdefaults\t0\t1" >> /target/etc/fstab
+	mkdir /target/boot/efi
+	mount "$esp_dev" /target/boot/efi/
+fi
+
+
+install_grub () {
+# Setup GRUB 
+echo -e $"\n Setting up grub bootloader.. Please wait..\n"
+
+
+
+#grubversion=$(dpkg -l | egrep "ii|hi" | grep -v bin | grep -v doc | awk '$2 ~ "grub-[eglp]" { print $2}')
 
 # If grub is installed to a partition, we need to know if it's grub-pc
 # or grub-legacy/grub-gfx to handle it properly.
@@ -1138,6 +1433,10 @@ EOF
 	else
 		chroot /target grub-install --recheck --no-floppy --force $grub_partition >> "$error_log" ; check_exit
 	fi
+
+elif [[ $grub_dev = "efi" ]] ; then
+	chroot /target grub-install ${efi_name_opt} >> "$error_log"; check_exit
+
 elif [[ -n $grub_dev ]]; then
     echo -e $"\n Installing the boot loader...\n"
     chroot /target grub-install $grub_dev >> "$error_log"; check_exit
@@ -1145,18 +1444,46 @@ fi
 }
 
 
+copy_grub_packages () {
+
+	find "$grub_package_dir" -maxdepth 1 -name "$grub_package" -exec cp {} /target \;
+#	chroot /target find . -name $grub_package -maxdepth 1 -exec dpkg -i {} \; # this works, but grub-pc/grub-pc-bin installed out of order.
+	chroot /target /bin/bash -c "dpkg -i $grub_package"    # This works. They installed in right order.
+	install_grub
+}
+
+
 ######  INSERT PAUSE TO ALLOW MANUAL WORK BEFORE GRUB (e.g. uefi)
-echo $" ****************************************************************
-	The program will pause to allow you to work in another virtual
-	console before installing the bootloader.
+
+
+if [[ -n "$grub_package" ]] ; then
+	grub_opt=$"c) Copy grub packages to /target and install bootloader"
+elif [[ -n "$grub_dev" ]] ; then
+	grub_opt=$"i) Install bootloader and finish the installation"
+fi
+
+while true ; do
+	echo $" ****************************************************************
+	The program will pause to allow you to work in another virtual terminal.
+	The installed system is ready for chroot. (proc, sys, dev are mounted)
+	Make a selection when you are ready to proceed.
+	
 	$grub_dev_message
 	
-	Press ENTER when you are ready to proceed."
-	read -p " "
+	Choices (enter letter)
+		${grub_opt}
+		n) Continue without a bootloader.
+		x) Abort the installation and exit.
+"
+	read ans
+	case "$ans" in
+		c) copy_grub_packages ; break ;;
+		i) install_grub ; break ;;
+		n) break ;;
+		x) cleanup ; exit 0 ;;
+	esac
+done
 
-if [[ -n "$grub_dev" ]] ; then
-	install_grub
-fi
 
 # Run update-initramfs to include dm-mod if using encryption
 if [[ $encrypt_os = yes ]] || [[ $encrypt_home = yes ]] ; then

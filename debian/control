@@ -1,0 +1,25 @@
+Source: refractainstaller-base
+Section: misc
+Priority: extra
+Maintainer: fsmithred <fsmithred@gmail.com>
+Build-Depends: debhelper (>= 7.0.50~)
+Standards-Version: 3.9.4
+Homepage: <https://github.com/fsmithred/refracta>
+
+Package: refractainstaller-base
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends},
+         bash (>=4.1),
+         rsync (>=3.0),
+         sed (>=4.2),
+         grep (>=2.6),
+         coreutils (>=8.5),
+         e2fsprogs (>=1.41.12),
+         mount (>=2.17.2),
+         util-linux (>=2.17.2)
+Recommends: cryptsetup, grub-pc | grub-legacy | grub-efi-amd64
+Replaces: refractainstaller (<< 9.0.8), refractainstaller-base (<< 9.3.0)
+Description: tool to install a running live-CD to hard drive.
+ Refracta Installer installs a live-CD or live-usb-hdd, including any
+ changes you've made to the running system onto a hard drive. This is
+ the cli-only version.

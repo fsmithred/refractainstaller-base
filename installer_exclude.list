@@ -1,0 +1,38 @@
+# rsync excludes file for refractainstaller
+
+- /dev/*
+- /cdrom/*
+- /media/*
+- /target
+- /swapfile
+- /mnt/*
+- /sys/*
+- /proc/*
+- /tmp/*
+- /live
+- /boot/grub/grub.cfg
+- /boot/grub/menu.lst
+- /boot/grub/device.map
+- /etc/udev/rules.d/70-persistent-cd.rules
+- /etc/udev/rules.d/70-persistent-net.rules
+- /etc/fstab
+- /etc/fstab.d/*
+- /etc/mtab
+- /home/snapshot/
+- /home/*/.gvfs
+- /var/lib/dbus/machine-id
+- /etc/popularity-contest.conf
+
+# Added for newer version of live-config/live-boot
+# in sid (to become Jessie)
+- /lib/live/overlay
+- /lib/live/image
+- /lib/live/rootfs
+- /lib/live/mount
+- /run/*
+
+# Added for symlink /lib
+- /usr/lib/live/overlay
+- /usr/lib/live/image
+- /usr/lib/live/rootfs
+- /usr/lib/live/mount

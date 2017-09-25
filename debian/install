@@ -1,0 +1,9 @@
+refractainstaller usr/bin
+change-username usr/bin
+installer_exclude.list usr/lib/refractainstaller
+home_boot_exclude.list usr/lib/refractainstaller
+inittab.debian usr/lib/refractainstaller
+refractainstaller.conf etc
+loc-timezn.sh usr/lib/refractainstaller/pre-install
+cleanup-install.sh usr/lib/refractainstaller/post-install
+move-dir-mount.sh usr/lib/refractainstaller

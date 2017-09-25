@@ -1,0 +1,731 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-09-24 21:44-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: refractainstaller:38
+msgid ""
+"\n"
+"\tUsage:  $0  [option]\n"
+"\t\n"
+"\tRun with no options to install a live-CD/DVD/USB to hard drive. \n"
+"\t\n"
+"\tIf you want to use the graphical version, run refractainstaller-gui\n"
+"\tfrom a terminal or run Refracta Installer from the System menu.\n"
+"\t\n"
+"\tvalid options:\n"
+"\t\t-h, --help\t\tshow this help text\n"
+"\t\t-v, --version\tdisplay the version information\n"
+"\t\t-d. --debug\t\tdebug mode\n"
+"\t\t\n"
+msgstr ""
+
+#: refractainstaller:76
+msgid "\\t You need to be root!\\n"
+msgstr ""
+
+#: refractainstaller:83
+#, sh-format
+msgid ""
+"\n"
+"\tConfig file $configfile is missing\n"
+"\tProceeding with default settings...\n"
+msgstr ""
+
+#: refractainstaller:114
+msgid ""
+" ###\tWARNING: Not running from live-CD or live-USB\t### \n"
+" ###\tor unsupported configuration. Be sure you know\t### \n"
+" ###\twhat you are doing. This may not work.\t\t### \n"
+" \n"
+" Press ENTER to proceed or ctrl-c to exit. "
+msgstr ""
+
+#: refractainstaller:135
+#, sh-format
+msgid ""
+"\n"
+"  \n"
+"  Exit due to error:  $exit_code\n"
+"  See $error_log for details.\n"
+"  "
+msgstr ""
+
+#: refractainstaller:148
+msgid ""
+"\n"
+" There is no rsync excludes file, or its name does not match what\n"
+" this script expects. You should let the script create one, or if\n"
+" you have a custom excludes file, and you know what you're doing,\n"
+" you can exit the script and edit the rsync_excludes variable at \n"
+" the top so that it matches the name and path of your custom file.\n"
+"\n"
+" Press ENTER to proceed or hit ctrl-c to exit. "
+msgstr ""
+
+#: refractainstaller:158
+#, sh-format
+msgid ""
+" Creating rsync excludes file, $rsync_excludes\n"
+" "
+msgstr ""
+
+#: refractainstaller:218
+msgid ""
+"\n"
+"\tNow that you know what you're doing...\n"
+"\t\n"
+"\t1) Continue\n"
+"\t2) Abort the installation\n"
+msgstr ""
+
+#: refractainstaller:240
+#, sh-format
+msgid ""
+" EFI partition found at ${esp_dev}\n"
+" If this is not on the first hard disk, something may be wrong,\n"
+" and you should investigate the situation."
+msgstr ""
+
+#: refractainstaller:246
+msgid " There is no EFI partition. You will need to create one."
+msgstr ""
+
+#: refractainstaller:248
+msgid ""
+" More than one EFI partition was detected. You will need to select one. "
+"Normally, it's on the first hard disk."
+msgstr ""
+
+#: refractainstaller:257 refractainstaller:312
+#, sh-format
+msgid "grub package(s) found in $grub_package_dir"
+msgstr ""
+
+#: refractainstaller:259
+#, sh-format
+msgid ""
+"\t\t\t### WARNING ### \n"
+"\tgrub-efi is not installed. \n"
+"\n"
+"\tIf you have the deb packages, you will be given a chance to install \n"
+"\tthem into the new system.\n"
+"\n"
+"\t${grub_package_message}\n"
+"${grub_debs}\n"
+msgstr ""
+
+#: refractainstaller:271
+#, sh-format
+msgid ""
+"\n"
+"\tRead the Help. \n"
+"\n"
+"\t${grub_efi_warning}\n"
+"\t\n"
+"\t${esp_dev_message}\n"
+"\t\n"
+"\tYou can skip creating the uefi bootloader, finish the installation, \n"
+"\tand use another installed linux to boot this one.\n"
+"\t\n"
+"\tDO NOT FORMAT A PRE-EXISTING EFI PARTITION!!!\n"
+"\n"
+"\t1) Help \n"
+"\t2) Continue\n"
+"\t3) Abort the installation\n"
+"\t\t"
+msgstr ""
+
+#: refractainstaller:299
+#, sh-format
+msgid ""
+"EFI partition(s) found. Do not format any EFI\n"
+"partitions if you plan to use them for uefi booting.\n"
+"${esp_list}\n"
+msgstr ""
+
+#: refractainstaller:314
+#, sh-format
+msgid ""
+"\t\t\t### WARNING ### \n"
+"\tgrub-pc is not installed but you booted in bios mode.\n"
+"\n"
+"\tIf you have the grub-pc deb packages, you will be given a chance to\n"
+"\tinstall them into the new system.\n"
+"\n"
+"\t${grub_package_message}\n"
+"${grub_debs}\n"
+msgstr ""
+
+#: refractainstaller:325
+#, sh-format
+msgid ""
+"\n"
+"\t${grub_efi_warning}\n"
+"\t\n"
+"\t${esp_dev_message}\n"
+"\n"
+"\tYou can skip installing a bootloader, finish the installation, and\n"
+"\tuse another installed linux to boot this one.\n"
+"\t\n"
+"\n"
+"\t1) Continue\n"
+"\t2) Abort the installation\n"
+"\t\t"
+msgstr ""
+
+#: refractainstaller:358
+#, sh-format
+msgid ""
+" \n"
+" You need to have a partition ready for the installation. If you \n"
+" haven't already done that, you can run the partition editor now.\n"
+" If you want a separate /home partition, you should create it at \n"
+" this time, this script will ask you later if you've done that.\n"
+" \n"
+" Choices (enter number):\n"
+"     1. GParted\n"
+"     2. $cli_partition_tool\n"
+"     3. No thanks, I already have a partition prepared. Continue.\n"
+"     4. I'd like to exit the script now.\n"
+"    "
+msgstr ""
+
+#: refractainstaller:374
+#, sh-format
+msgid ""
+"\n"
+" GParted is not installed. Would you like to use $cli_partition_tool "
+"instead?\n"
+"\t\t\t\t\n"
+"\tYes (use $cli_partition_tool)\n"
+"\tNo (exit the script)\n"
+msgstr ""
+
+#: refractainstaller:393
+#, sh-format
+msgid ""
+"\n"
+" GParted requires a graphical environment.\n"
+" Would you like to use $cli_partition_tool instead?\n"
+"\t\t\t\t\n"
+"\tYes (use ${cli_partition_tool})\n"
+"\tNo (exit the script)\n"
+msgstr ""
+
+#: refractainstaller:425
+msgid ""
+"\n"
+" Would you like fdisk to show you what drives and partitions\n"
+" are available? (y/N): "
+msgstr ""
+
+#: refractainstaller:439
+#, sh-format
+msgid ""
+"\n"
+" WARNING:  The selected partition does not contain a FAT32 filesystem.\n"
+" If you just created a new efi partition (ef00), you need to format it.  \n"
+" \n"
+"\ty) Yes, create a fat32 partition on $esp_dev\n"
+"\tn) No, proceed without a bootloader.\n"
+"\tx) Abort the install to investigate the situation.\n"
+" \n"
+" Format new efi partition? (y/n/x): "
+msgstr ""
+
+#: refractainstaller:468
+msgid "There is no EFI partition. You will need to create one."
+msgstr ""
+
+#: refractainstaller:472
+#, sh-format
+msgid ""
+"\n"
+"******************************************************\n"
+"\n"
+" Enter the device name for the EFI partition to use.\n"
+" (example: /dev/sda1)\n"
+"\n"
+"  $esp_info\n"
+"\n"
+"enter device:"
+msgstr ""
+
+#: refractainstaller:483
+msgid ""
+"Not a valid EFI partition.\n"
+"\n"
+"Press ctrl-c to exit or ENTER to proceed without a bootloader.\n"
+"DO NOT SELECT AN EFI PARITION FOR ANOTHER PURPOSE."
+msgstr ""
+
+#: refractainstaller:505
+msgid ""
+"\n"
+"\t\n"
+"\t Where would you like the GRUB bootloader to be installed?\n"
+"\t (probably a drive, like /dev/sda) \n"
+"\t \n"
+"\t If you don't want to install the bootloader, leave this blank.\n"
+"\t You will need to do some manual configuration after the install.:\n"
+"\t "
+msgstr ""
+
+#: refractainstaller:516
+#, sh-format
+msgid "$grub_dev is not a block device. "
+msgstr ""
+
+#: refractainstaller:538
+msgid ""
+"\n"
+"\n"
+" If you created a separate partition for /boot, enter it here.\n"
+" To skip this, just hit the ENTER key.\n"
+" \n"
+" (give the full device name, like /dev/sda1): "
+msgstr ""
+
+#: refractainstaller:548
+#, sh-format
+msgid ""
+" $boot_dev does not exist!\n"
+" You may continue and install without a separate boot partition,\n"
+" or you can hit ctrl-c to exit, then re-run the script, and\n"
+" be sure to create a partition for /boot.\n"
+"    "
+msgstr ""
+
+#: refractainstaller:554 refractainstaller:564 refractainstaller:719
+msgid "Press ENTER when you're ready to continue"
+msgstr ""
+
+#: refractainstaller:560
+msgid ""
+" EFI partition and /boot partition cannot be the same.\n"
+" You may continue and install without a separate boot partition,\n"
+" or you can hit ctrl-c to exit,"
+msgstr ""
+
+#: refractainstaller:573
+#, sh-format
+msgid ""
+"\n"
+"    \n"
+" What type of filesystem would you like on $boot_dev?\n"
+" \n"
+" Choices (enter number):\n"
+"    2) ext2 (recommended for /boot)\n"
+"    3) ext3\n"
+"    4) ext4\n"
+"   "
+msgstr ""
+
+#: refractainstaller:602
+msgid ""
+"\n"
+"\n"
+" Which partition would you like to use for the installation\n"
+" of the operating system?\n"
+" \n"
+" (give the full device name, like /dev/sda1): "
+msgstr ""
+
+#: refractainstaller:609
+#, sh-format
+msgid "$install_dev does not exist! "
+msgstr ""
+
+#: refractainstaller:615
+#, sh-format
+msgid ""
+"\n"
+"\t    \n"
+" What type of filesystem would you like on $install_dev?\n"
+" \n"
+" Choices (enter number):\n"
+"    2) ext2\n"
+"    3) ext3\n"
+"    4) ext4\n"
+msgstr ""
+
+#: refractainstaller:636
+msgid ""
+"\n"
+"\t\n"
+" Do you want the operating system on an encrypted partition?\n"
+" (yes or no)\n"
+"\t "
+msgstr ""
+
+#: refractainstaller:647
+msgid ""
+" Cryptsetup is not installed. You need to\n"
+" install it and run the command, 'sudo modprobe dm-mod'\n"
+" before you can use encryption.Do you want to proceed\n"
+" without encrypting the partition?\n"
+" (y or n)\n"
+"\t \n"
+"      Yes) Proceed without encrypting the partition\n"
+"       No) Exit\n"
+"       "
+msgstr ""
+
+#: refractainstaller:668
+msgid ""
+" You MUST have a separate, unencrypted /boot partition\n"
+" if you intend to boot an encrypted operating system.\n"
+" You can proceed without encrypting the root filesystem,\n"
+" or you can exit and start over.Do you want to proceed\n"
+" without encrypting the partition?\n"
+" (y or n)\n"
+"\t \n"
+"      Yes) Proceed without encrypting the partition\n"
+"       No) Exit\n"
+"\t       "
+msgstr ""
+
+#: refractainstaller:702
+msgid ""
+"\n"
+"\n"
+"  If you created a separate partition for /home, \n"
+"  enter the full device name. However, if you're \n"
+"  installing everything to one partition, you should\n"
+"  leave this blank.\n"
+"\n"
+"  /home partition (if one exists): "
+msgstr ""
+
+#: refractainstaller:712
+#, sh-format
+msgid ""
+"\n"
+"    $home_dev does not exist!\n"
+"    You may continue and install everything to one partition,\n"
+"    or you can hit ctrl-c to exit, then re-run the script, and\n"
+"    be sure to create a partition for /home.\n"
+"    "
+msgstr ""
+
+#: refractainstaller:726
+#, sh-format
+msgid ""
+"\n"
+"        \n"
+" What type of filesystem would you like on $home_dev?\n"
+" \n"
+" Choices (enter number):\n"
+"    2) ext2\n"
+"    3) ext3\n"
+"    4) ext4\n"
+"   "
+msgstr ""
+
+#: refractainstaller:746
+msgid ""
+"\n"
+"        \n"
+" Do you want /home on an encrypted partition?\n"
+" (yes or no)\n"
+" "
+msgstr ""
+
+#: refractainstaller:757
+msgid ""
+" Cryptsetup is not installed. You need to\n"
+" install it and run the command, 'sudo modprobe dm-mod'\n"
+" before you can use encryption. Do you want to proceed\n"
+" without encrypting the partition?\n"
+" (y or n)\n"
+" \n"
+"      Yes) Proceed without encrypting the partition\n"
+"       No) Exit\n"
+"       "
+msgstr ""
+
+#: refractainstaller:793
+#, sh-format
+msgid ""
+"\n"
+" List of swap partitions available\n"
+" $swap_info\n"
+"\n"
+"Enter the swap device to use. If you don't enter a device name,\n"
+"a swapfile will be used instead.\n"
+msgstr ""
+
+#: refractainstaller:818
+msgid ""
+"\n"
+" Would you like fstab to use the UUID to identify filesystems?\n"
+" This is useful if your drive order changes between reboots.\n"
+"\t[Default has changed] (Y/n)\n"
+" "
+msgstr ""
+
+#: refractainstaller:827
+msgid ""
+"--> UUIDs in fstab won't work with encrypted filesystems and\n"
+"    will not be used. Edit fstab manually after the installation."
+msgstr ""
+
+#: refractainstaller:843
+msgid ""
+"\n"
+" Illegal hostname. Try again.\n"
+"\t\n"
+" You can use alphanumeric characters anywhere in the hostname, and \n"
+" you can use the minus sign (-) as long as it's not at the beginning \n"
+" or end.\n"
+"\n"
+"New hostname: "
+msgstr ""
+
+#: refractainstaller:1041
+#, sh-format
+msgid ""
+"\n"
+"    \n"
+" Preparing $home_dev...\n"
+"    "
+msgstr ""
+
+#: refractainstaller:1047
+msgid ""
+"\n"
+" You will need to create a passphrase.\n"
+" "
+msgstr ""
+
+#: refractainstaller:1052
+msgid "Encrypted partition created. Opening it..."
+msgstr ""
+
+#: refractainstaller:1081
+msgid "\\n Copying system to new partition...\\n"
+msgstr ""
+
+#: refractainstaller:1086
+msgid "\\n Copying home folders to new partition...\\n"
+msgstr ""
+
+#: refractainstaller:1092
+msgid "\\n Copying files to boot partitions...\\n"
+msgstr ""
+
+#: refractainstaller:1098
+msgid "\\n Making a swap file...\\n"
+msgstr ""
+
+#: refractainstaller:1121
+msgid ""
+" \\n\\nDisable auto-login?\n"
+"\t(Y/n)\n"
+"\t"
+msgstr ""
+
+#: refractainstaller:1276
+msgid "\\n Copying update-initramfs...\\n"
+msgstr ""
+
+#: refractainstaller:1298
+msgid "\\n Creating /etc/fstab...\\n"
+msgstr ""
+
+#: refractainstaller:1310
+msgid "\\n Adding /home entry to fstab...\\n"
+msgstr ""
+
+#: refractainstaller:1322
+msgid "\\n Adding /boot entry to fstab...\\n"
+msgstr ""
+
+#: refractainstaller:1335
+msgid "\\n Adding swap entry to fstab...\\n"
+msgstr ""
+
+#: refractainstaller:1344
+#, sh-format
+msgid "\\n Adding $install_part entry to crypttab...\\n"
+msgstr ""
+
+#: refractainstaller:1350
+#, sh-format
+msgid "\\n Adding $home_part entry to crypttab...\\n"
+msgstr ""
+
+#: refractainstaller:1365
+msgid ""
+"WARNING: ssh_pass value not recognized. No changes were made to /etc/ssh/"
+"sshd_config"
+msgstr ""
+
+#: refractainstaller:1371
+msgid "\\n Mounting tmpfs and proc...\\n"
+msgstr ""
+
+#: refractainstaller:1393
+msgid "\\n Adding esp entry to fstab...\\n"
+msgstr ""
+
+#: refractainstaller:1402
+msgid "\\n Setting up grub bootloader.. Please wait..\\n"
+msgstr ""
+
+#: refractainstaller:1441
+msgid "\\n Installing the boot loader...\\n"
+msgstr ""
+
+#: refractainstaller:1460
+msgid "c) Copy grub packages to /target and install bootloader"
+msgstr ""
+
+#: refractainstaller:1462
+msgid "i) Install bootloader and finish the installation"
+msgstr ""
+
+#: refractainstaller:1466
+#, sh-format
+msgid ""
+" ****************************************************************\n"
+"\tThe program will pause to allow you to work in another virtual terminal.\n"
+"\tThe installed system is ready for chroot. (proc, sys, dev are mounted)\n"
+"\tMake a selection when you are ready to proceed.\n"
+"\t\n"
+"\t$grub_dev_message\n"
+"\t\n"
+"\tChoices (enter letter)\n"
+"\t\t${grub_opt}\n"
+"\t\tn) Continue without a bootloader.\n"
+"\t\tx) Abort the installation and exit.\n"
+msgstr ""
+
+#: refractainstaller:1524
+#, sh-format
+msgid ""
+"\n"
+" The current primary user's name is $oldname. If you want to change it,\n"
+" enter the new user name now. To proceed without changing the name, just\n"
+" press ENTER.\n"
+msgstr ""
+
+#: refractainstaller:1532
+msgid ""
+"\n"
+" Enter the new user's real name.\n"
+msgstr ""
+
+#: refractainstaller:1559
+msgid ""
+"\n"
+" Change the new user's password? (Y/n)\n"
+msgstr ""
+
+#: refractainstaller:1568
+msgid "Change user's passowrd"
+msgstr ""
+
+#: refractainstaller:1585
+msgid ""
+"\n"
+" Most live images use 'sudo' for root access. No password is required.\n"
+" It is recommended to disable sudo in an installation and use 'su' \n"
+" with a root password. Optionally you may permit sudo for the new\n"
+" user or you may use sudo as default for the new user, with no root \n"
+" account. \n"
+"    \n"
+" Select one (Enter a, b, or c):\n"
+"\ta) Disable sudo (recommended)\n"
+"\tb) Permit sudo for new user (and keep root account.)\n"
+"\tc) Use sudo as default for new user (and disable root account.)\n"
+"\td) Use sudo only for shutdown (and keep root account.)\n"
+"    "
+msgstr ""
+
+#: refractainstaller:1632
+msgid "disabling root account.. "
+msgstr ""
+
+#: refractainstaller:1684
+msgid ""
+"\n"
+" Change root password?\n"
+" (yes or no)\n"
+msgstr ""
+
+#: refractainstaller:1694
+msgid "Change root passowrd"
+msgstr ""
+
+#: refractainstaller:1731
+msgid ""
+"\n"
+"    Done! You may now reboot into the new system.\n"
+"    If you want to change the user name, then run\n"
+"    change-username after reboot.\n"
+"    "
+msgstr ""
+
+#: move-dir-mount.sh:18
+msgid ""
+"\n"
+"\n"
+" Enter the directory you want to move to another partition.\n"
+" Do not use a trailing slash.\n"
+" (examples:  /var or /usr\n"
+" "
+msgstr ""
+
+#: move-dir-mount.sh:27
+msgid "Error: You didn't enter a directory. Nothing will be moved."
+msgstr ""
+
+#: move-dir-mount.sh:37
+msgid ""
+"\n"
+"\n"
+" Enter the destination partition for /${source_dir##*/}.\n"
+" (example: /dev/sdb3)\n"
+" "
+msgstr ""
+
+#: move-dir-mount.sh:45
+msgid "Error: You didn't enter a partition. Nothing will be moved."
+msgstr ""
+
+#: move-dir-mount.sh:50
+#, sh-format
+msgid ""
+"Error: $destination_partition is not a valid block device. Nothing will be "
+"moved."
+msgstr ""
+
+#: move-dir-mount.sh:55
+#, sh-format
+msgid ""
+"Error: $destination_partition is not a valid partition. Nothing will be "
+"moved."
+msgstr ""
+
+#: move-dir-mount.sh:85
+msgid ""
+"\n"
+" Do you want to move another directory to a separate partition? (y,N):\n"
+" "
+msgstr ""

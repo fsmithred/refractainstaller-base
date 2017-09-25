@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 # move-dir-mount.sh
 
-TEXTDOMAIN=refractainstaller-gui
-TEXTDOMAINDIR=/usr/share/locale/
+. gettext.sh
+TEXTDOMAIN=refractainstaller-base
+export TEXTDOMAIN
+TEXTDOMAINDIR=/usr/share/locale
+export TEXTDOMAINDIR
 
 #set -x
 
