@@ -149,8 +149,8 @@ if ! [[ -f  $rsync_excludes ]] ; then
  There is no rsync excludes file, or its name does not match what
  this script expects. You should let the script create one, or if
  you have a custom excludes file, and you know what you're doing,
- you can exit the script and edit the rsync_excludes variable at 
- the top so that it matches the name and path of your custom file.
+ you can exit the script and edit the rsync_excludes variable in 
+ $configfile so that it matches the name and path of your custom file.
 
  Press ENTER to proceed or hit ctrl-c to exit. "
     read -p " "
@@ -448,7 +448,7 @@ ask_format_efi () {
  
 		read ans
 		case "$ans" in
-			[Yy]*) mkfs.vfat "$esp_dev" ; break ;;
+			[Yy]*) mkfs.vfat -F 32 "$esp_dev" ; break ;;
 			[Nn]*) break ;;
 			[Xx]*) exit 0 ;;
 		esac
