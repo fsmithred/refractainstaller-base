@@ -83,11 +83,13 @@ ask_again
 ask_again () {
 while true; do
 	echo -n $"
- Do you want to move another directory to a separate partition? (y,N):
+ Do you want to move another directory to a separate partition?
+   Press 1 for yes.
+   Press ENTER for NO.
  "
 	read ans
 	case $ans in
-		[Yy]*)	move_dir; break ;;
+		[1Yy]*)	move_dir; break ;;
 		*)		exit 0 ;;
 	esac
 done

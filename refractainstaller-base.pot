@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-24 21:44-0400\n"
+"POT-Creation-Date: 2017-11-05 08:00-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -66,6 +66,7 @@ msgid ""
 msgstr ""
 
 #: refractainstaller:148
+#, sh-format
 msgid ""
 "\n"
 " There is no rsync excludes file, or its name does not match what\n"
@@ -212,8 +213,8 @@ msgid ""
 " GParted is not installed. Would you like to use $cli_partition_tool "
 "instead?\n"
 "\t\t\t\t\n"
-"\tYes (use $cli_partition_tool)\n"
-"\tNo (exit the script)\n"
+"\t1) Yes (use $cli_partition_tool)\n"
+"\t2) No (exit the script)\n"
 msgstr ""
 
 #: refractainstaller:393
@@ -223,15 +224,15 @@ msgid ""
 " GParted requires a graphical environment.\n"
 " Would you like to use $cli_partition_tool instead?\n"
 "\t\t\t\t\n"
-"\tYes (use ${cli_partition_tool})\n"
-"\tNo (exit the script)\n"
+"\t1) Yes (use ${cli_partition_tool})\n"
+"2) No (exit the script)\n"
 msgstr ""
 
 #: refractainstaller:425
 msgid ""
 "\n"
-" Would you like fdisk to show you what drives and partitions\n"
-" are available? (y/N): "
+" Press 1 to see a list of drives and partitions\n"
+" or press ENTER to proceed."
 msgstr ""
 
 #: refractainstaller:439
@@ -241,9 +242,9 @@ msgid ""
 " WARNING:  The selected partition does not contain a FAT32 filesystem.\n"
 " If you just created a new efi partition (ef00), you need to format it.  \n"
 " \n"
-"\ty) Yes, create a fat32 partition on $esp_dev\n"
-"\tn) No, proceed without a bootloader.\n"
-"\tx) Abort the install to investigate the situation.\n"
+"\t1) Yes, create a fat32 partition on $esp_dev\n"
+"\t2) No, proceed without a bootloader.\n"
+"\t3) Abort the install to investigate the situation.\n"
 " \n"
 " Format new efi partition? (y/n/x): "
 msgstr ""
@@ -311,7 +312,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: refractainstaller:554 refractainstaller:564 refractainstaller:719
+#: refractainstaller:554 refractainstaller:564 refractainstaller:718
 msgid "Press ENTER when you're ready to continue"
 msgstr ""
 
@@ -369,20 +370,20 @@ msgid ""
 "\n"
 "\t\n"
 " Do you want the operating system on an encrypted partition?\n"
-" (yes or no)\n"
+"   1) yes\n"
+"   2) no\n"
 "\t "
 msgstr ""
 
-#: refractainstaller:647
+#: refractainstaller:648
 msgid ""
 " Cryptsetup is not installed. You need to\n"
 " install it and run the command, 'sudo modprobe dm-mod'\n"
 " before you can use encryption.Do you want to proceed\n"
 " without encrypting the partition?\n"
-" (y or n)\n"
-"\t \n"
-"      Yes) Proceed without encrypting the partition\n"
-"       No) Exit\n"
+" \n"
+"    1) Yes, proceed without encrypting the partition\n"
+"    2) No.  Exit\n"
 "       "
 msgstr ""
 
@@ -393,14 +394,13 @@ msgid ""
 " You can proceed without encrypting the root filesystem,\n"
 " or you can exit and start over.Do you want to proceed\n"
 " without encrypting the partition?\n"
-" (y or n)\n"
 "\t \n"
-"      Yes) Proceed without encrypting the partition\n"
-"       No) Exit\n"
+"\t1) Yes, proceed without encrypting the partition\n"
+"    2) No. Exit\n"
 "\t       "
 msgstr ""
 
-#: refractainstaller:702
+#: refractainstaller:701
 msgid ""
 "\n"
 "\n"
@@ -412,7 +412,7 @@ msgid ""
 "  /home partition (if one exists): "
 msgstr ""
 
-#: refractainstaller:712
+#: refractainstaller:711
 #, sh-format
 msgid ""
 "\n"
@@ -423,7 +423,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: refractainstaller:726
+#: refractainstaller:725
 #, sh-format
 msgid ""
 "\n"
@@ -437,12 +437,13 @@ msgid ""
 "   "
 msgstr ""
 
-#: refractainstaller:746
+#: refractainstaller:745
 msgid ""
 "\n"
 "        \n"
 " Do you want /home on an encrypted partition?\n"
-" (yes or no)\n"
+" 1) Yes\n"
+" 2) No\n"
 " "
 msgstr ""
 
@@ -452,14 +453,13 @@ msgid ""
 " install it and run the command, 'sudo modprobe dm-mod'\n"
 " before you can use encryption. Do you want to proceed\n"
 " without encrypting the partition?\n"
-" (y or n)\n"
 " \n"
-"      Yes) Proceed without encrypting the partition\n"
-"       No) Exit\n"
+"      1) Yes, proceed without encrypting the partition.\n"
+"      2) No. Exit\n"
 "       "
 msgstr ""
 
-#: refractainstaller:793
+#: refractainstaller:792
 #, sh-format
 msgid ""
 "\n"
@@ -470,12 +470,13 @@ msgid ""
 "a swapfile will be used instead.\n"
 msgstr ""
 
-#: refractainstaller:818
+#: refractainstaller:817
 msgid ""
 "\n"
 " Would you like fstab to use the UUID to identify filesystems?\n"
 " This is useful if your drive order changes between reboots.\n"
-"\t[Default has changed] (Y/n)\n"
+"   Press ENTER for YES.\n"
+"   Press 2 for no.\n"
 " "
 msgstr ""
 
@@ -497,7 +498,7 @@ msgid ""
 "New hostname: "
 msgstr ""
 
-#: refractainstaller:1041
+#: refractainstaller:1043
 #, sh-format
 msgid ""
 "\n"
@@ -506,101 +507,102 @@ msgid ""
 "    "
 msgstr ""
 
-#: refractainstaller:1047
+#: refractainstaller:1049
 msgid ""
 "\n"
 " You will need to create a passphrase.\n"
 " "
 msgstr ""
 
-#: refractainstaller:1052
+#: refractainstaller:1054
 msgid "Encrypted partition created. Opening it..."
 msgstr ""
 
-#: refractainstaller:1081
+#: refractainstaller:1083
 msgid "\\n Copying system to new partition...\\n"
 msgstr ""
 
-#: refractainstaller:1086
+#: refractainstaller:1088
 msgid "\\n Copying home folders to new partition...\\n"
 msgstr ""
 
-#: refractainstaller:1092
+#: refractainstaller:1094
 msgid "\\n Copying files to boot partitions...\\n"
 msgstr ""
 
-#: refractainstaller:1098
+#: refractainstaller:1100
 msgid "\\n Making a swap file...\\n"
 msgstr ""
 
-#: refractainstaller:1121
+#: refractainstaller:1123
 msgid ""
 " \\n\\nDisable auto-login?\n"
-"\t(Y/n)\n"
+"\tPress ENTER for YES.\n"
+"\tPress 2 for no.\n"
 "\t"
 msgstr ""
 
-#: refractainstaller:1276
+#: refractainstaller:1279
 msgid "\\n Copying update-initramfs...\\n"
 msgstr ""
 
-#: refractainstaller:1298
+#: refractainstaller:1301
 msgid "\\n Creating /etc/fstab...\\n"
 msgstr ""
 
-#: refractainstaller:1310
+#: refractainstaller:1313
 msgid "\\n Adding /home entry to fstab...\\n"
 msgstr ""
 
-#: refractainstaller:1322
+#: refractainstaller:1325
 msgid "\\n Adding /boot entry to fstab...\\n"
 msgstr ""
 
-#: refractainstaller:1335
+#: refractainstaller:1338
 msgid "\\n Adding swap entry to fstab...\\n"
 msgstr ""
 
-#: refractainstaller:1344
+#: refractainstaller:1347
 #, sh-format
 msgid "\\n Adding $install_part entry to crypttab...\\n"
 msgstr ""
 
-#: refractainstaller:1350
+#: refractainstaller:1353
 #, sh-format
 msgid "\\n Adding $home_part entry to crypttab...\\n"
 msgstr ""
 
-#: refractainstaller:1365
+#: refractainstaller:1368
 msgid ""
 "WARNING: ssh_pass value not recognized. No changes were made to /etc/ssh/"
 "sshd_config"
 msgstr ""
 
-#: refractainstaller:1371
+#: refractainstaller:1374
 msgid "\\n Mounting tmpfs and proc...\\n"
 msgstr ""
 
-#: refractainstaller:1393
+#: refractainstaller:1396
 msgid "\\n Adding esp entry to fstab...\\n"
 msgstr ""
 
-#: refractainstaller:1402
+#: refractainstaller:1405
 msgid "\\n Setting up grub bootloader.. Please wait..\\n"
 msgstr ""
 
-#: refractainstaller:1441
+#: refractainstaller:1444
 msgid "\\n Installing the boot loader...\\n"
 msgstr ""
 
-#: refractainstaller:1460
-msgid "c) Copy grub packages to /target and install bootloader"
+#: refractainstaller:1463
+msgid "1) Copy grub packages to /target and install bootloader"
 msgstr ""
 
-#: refractainstaller:1462
-msgid "i) Install bootloader and finish the installation"
+#: refractainstaller:1465
+msgid "2) Install bootloader and finish the installation"
 msgstr ""
 
-#: refractainstaller:1466
+#: refractainstaller:1469
 #, sh-format
 msgid ""
 " ****************************************************************\n"
@@ -610,13 +612,13 @@ msgid ""
 "\t\n"
 "\t$grub_dev_message\n"
 "\t\n"
-"\tChoices (enter letter)\n"
+"\tChoices (enter number)\n"
 "\t\t${grub_opt}\n"
-"\t\tn) Continue without a bootloader.\n"
-"\t\tx) Abort the installation and exit.\n"
+"\t\t3) Continue without a bootloader.\n"
+"\t\t4) Abort the installation and exit.\n"
 msgstr ""
 
-#: refractainstaller:1524
+#: refractainstaller:1527
 #, sh-format
 msgid ""
 "\n"
@@ -625,23 +627,25 @@ msgid ""
 " press ENTER.\n"
 msgstr ""
 
-#: refractainstaller:1532
+#: refractainstaller:1535
 msgid ""
 "\n"
 " Enter the new user's real name.\n"
 msgstr ""
 
-#: refractainstaller:1559
+#: refractainstaller:1562
 msgid ""
 "\n"
-" Change the new user's password? (Y/n)\n"
+" Change the new user's password?\n"
+"   Press ENTER for YES.\n"
+"   Press 2 for no.\n"
 msgstr ""
 
-#: refractainstaller:1568
+#: refractainstaller:1573
 msgid "Change user's passowrd"
 msgstr ""
 
-#: refractainstaller:1585
+#: refractainstaller:1590
 msgid ""
 "\n"
 " Most live images use 'sudo' for root access. No password is required.\n"
@@ -651,29 +655,30 @@ msgid ""
 " account. \n"
 "    \n"
 " Select one (Enter a, b, or c):\n"
-"\ta) Disable sudo (recommended)\n"
-"\tb) Permit sudo for new user (and keep root account.)\n"
-"\tc) Use sudo as default for new user (and disable root account.)\n"
-"\td) Use sudo only for shutdown (and keep root account.)\n"
+"\t1) Disable sudo (recommended)\n"
+"\t2) Permit sudo for new user (and keep root account.)\n"
+"\t3) Use sudo as default for new user (and disable root account.)\n"
+"\t4) Use sudo only for shutdown (and keep root account.)\n"
 "    "
 msgstr ""
 
-#: refractainstaller:1632
+#: refractainstaller:1637
 msgid "disabling root account.. "
 msgstr ""
 
-#: refractainstaller:1684
+#: refractainstaller:1689
 msgid ""
 "\n"
 " Change root password?\n"
-" (yes or no)\n"
+"   Press ENTER for YES.\n"
+"   Press 2 for no.\n"
 msgstr ""
 
-#: refractainstaller:1694
+#: refractainstaller:1701
 msgid "Change root passowrd"
 msgstr ""
 
-#: refractainstaller:1731
+#: refractainstaller:1737
 msgid ""
 "\n"
 "    Done! You may now reboot into the new system.\n"
@@ -726,6 +731,8 @@ msgstr ""
 #: move-dir-mount.sh:85
 msgid ""
 "\n"
-" Do you want to move another directory to a separate partition? (y,N):\n"
+" Do you want to move another directory to a separate partition?\n"
+"   Press 1 for yes.\n"
+"   Press ENTER for NO.\n"
 " "
 msgstr ""

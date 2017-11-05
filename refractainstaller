@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-version="refractainstaller  9.3.0 (20170916)"
+version="refractainstaller  9.3.1 (20171105)"
 
 . gettext.sh
 TEXTDOMAIN=refractainstaller-base
@@ -374,18 +374,18 @@ while true; do
 				echo $"
  GParted is not installed. Would you like to use $cli_partition_tool instead?
 				
-	Yes (use $cli_partition_tool)
-	No (exit the script)
+	1) Yes (use $cli_partition_tool)
+	2) No (exit the script)
 "
 				
 				read ans
 				case $ans in
-				  [Yy]*) "$cli_partition_tool" 					# need function here. If no partition table, must exit and run gdisk or parted.
+				  [1Yy]*) "$cli_partition_tool" 					# need function here. If no partition table, must exit and run gdisk or parted.
 						if [[ $uefi_boot = "yes" ]] ; then
 							ask_format_efi
 						fi
 						break ;;
-				  [Nn]*) exit 0 ;;
+				  [2Nn]*) exit 0 ;;
 				esac
 			done
 		 elif ! [[ $DISPLAY ]]; then
@@ -394,18 +394,18 @@ while true; do
  GParted requires a graphical environment.
  Would you like to use $cli_partition_tool instead?
 				
-	Yes (use ${cli_partition_tool})
-	No (exit the script)
+	1) Yes (use ${cli_partition_tool})
+2) No (exit the script)
 "
 				
 				read ans
 				case $ans in
-				  [Yy]*) "$cli_partition_tool"
+				  [1Yy]*) "$cli_partition_tool"
 						if [[ $uefi_boot = "yes" ]] ; then
 							ask_format_efi
 						fi
 						break ;;
-				  [Nn]*) exit 0 ;;
+				  [2Nn]*) exit 0 ;;
 				esac
 			done
 		 
@@ -423,11 +423,11 @@ done
 # Ask to display partitions
 while true; do
     echo -n $"
- Would you like fdisk to show you what drives and partitions
- are available? (y/N): "
+ Press 1 to see a list of drives and partitions
+ or press ENTER to proceed."
     read ans
     case $ans in
-      [Yy]*) fdisk -l ; sleep 5 ; break ;;
+      [1Yy]*) fdisk -l ; sleep 5 ; break ;;
       *) break ;;
     esac
 done
@@ -440,17 +440,17 @@ ask_format_efi () {
  WARNING:  The selected partition does not contain a FAT32 filesystem.
  If you just created a new efi partition (ef00), you need to format it.  
  
-	y) Yes, create a fat32 partition on $esp_dev
-	n) No, proceed without a bootloader.
-	x) Abort the install to investigate the situation.
+	1) Yes, create a fat32 partition on $esp_dev
+	2) No, proceed without a bootloader.
+	3) Abort the install to investigate the situation.
  
  Format new efi partition? (y/n/x): "
  
 		read ans
 		case "$ans" in
-			[Yy]*) mkfs.vfat -F 32 "$esp_dev" ; break ;;
-			[Nn]*) break ;;
-			[Xx]*) exit 0 ;;
+			[1Yy]*) mkfs.vfat -F 32 "$esp_dev" ; break ;;
+			[2Nn]*) break ;;
+			[3Xx]*) exit 0 ;;
 		esac
 	done
 
@@ -636,11 +636,12 @@ choose_fs_os () {
 	    echo -n $"
 	
  Do you want the operating system on an encrypted partition?
- (yes or no)
+   1) yes
+   2) no
 	 "
 	    read ans
 	    case $ans in
-	      [Yy]*) encrypt_os="yes"
+	      [1Yy]*) encrypt_os="yes"
 	             # test for cryptsetup
 	             if ! [[ -f /sbin/cryptsetup ]]; then
 	                 while true; do
@@ -648,15 +649,14 @@ choose_fs_os () {
  install it and run the command, 'sudo modprobe dm-mod'
  before you can use encryption.Do you want to proceed
  without encrypting the partition?
- (y or n)
-	 
-      Yes) Proceed without encrypting the partition
-       No) Exit
+ 
+    1) Yes, proceed without encrypting the partition
+    2) No.  Exit
        "
 	                    read ans
 	                    case $ans in
-	                      [Yy]*) encrypt_os="no" ; break 2 ;;
-	                      [Nn]*) exit 1 ;;
+	                      [1Yy]*) encrypt_os="no" ; break 2 ;;
+	                      [2Nn]*) exit 1 ;;
 	                    esac
 	                done
 	             fi
@@ -670,21 +670,20 @@ choose_fs_os () {
  You can proceed without encrypting the root filesystem,
  or you can exit and start over.Do you want to proceed
  without encrypting the partition?
- (y or n)
 	 
-      Yes) Proceed without encrypting the partition
-       No) Exit
+	1) Yes, proceed without encrypting the partition
+    2) No. Exit
 	       "
 	                    read ans
 	                    case $ans in
-	                      [Yy]*) break ;;
-	                      [Nn]*) exit 1 ;;
+	                      [1Yy]*) break ;;
+	                      [2Nn]*) exit 1 ;;
 	                    esac
 	                done
 	            fi
 	            # end test for separate /boot partition
 	            break ;;
-	      [Nn]*) encrypt_os="no"  ; break ;;
+	      [2Nn]*) encrypt_os="no"  ; break ;;
 	    esac
 	done
 
@@ -746,11 +745,12 @@ choose_fs_home () {
         echo -n $"
         
  Do you want /home on an encrypted partition?
- (yes or no)
+ 1) Yes
+ 2) No
  "
     read ans
     case $ans in
-      [Yy]*) encrypt_home="yes"
+      [1Yy]*) encrypt_home="yes"
              # test for cryptsetup
              if ! [[ -f /sbin/cryptsetup ]]; then
                  while true; do
@@ -758,21 +758,20 @@ choose_fs_home () {
  install it and run the command, 'sudo modprobe dm-mod'
  before you can use encryption. Do you want to proceed
  without encrypting the partition?
- (y or n)
  
-      Yes) Proceed without encrypting the partition
-       No) Exit
+      1) Yes, proceed without encrypting the partition.
+      2) No. Exit
        "
                     read ans
                     case $ans in
-                      [Yy]*) encrypt_home="no" ; break 2 ;;
-                      [Nn]*) exit 1 ;;
+                      [1Yy]*) encrypt_home="no" ; break 2 ;;
+                      [2Nn]*) exit 1 ;;
                     esac
                 done
              fi
              # end test for cryptsetup
              break ;;
-      [Nn]*) encrypt_home="no"  ; break ;;
+      [2Nn]*) encrypt_home="no"  ; break ;;
     esac
     done
 
@@ -818,11 +817,12 @@ while true; do
 	echo -n $"
  Would you like fstab to use the UUID to identify filesystems?
  This is useful if your drive order changes between reboots.
-	[Default has changed] (Y/n)
+   Press ENTER for YES.
+   Press 2 for no.
  " 
  	read ans
 	case $ans in
-		[Nn]*)	break ;;
+		[2Nn]*)	break ;;
 		*) 	if [[ $encrypt_os = "yes" ]] || [[ $encrypt_home = "yes" ]]; then
 				uuid_message=$"--> UUIDs in fstab won't work with encrypted filesystems and
     will not be used. Edit fstab manually after the installation."
@@ -930,14 +930,16 @@ while true; do
    
  WARNING: This is your last chance to exit before any changes are made.
  
- Proceed with the installation?  (yes or no)
+ Proceed with the installation?  
+   1) Tes
+   2) No, abort the installation.
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
  "
     read ans
     case $ans in
-      [Yy]*) break ;;
-      [Nn]*) exit 0 ;;
+      [1Yy]*) break ;;
+      [2Nn]*) exit 0 ;;
     esac
 done
 
@@ -1119,11 +1121,12 @@ fi
 
 while true; do
 	echo -e $" \n\nDisable auto-login?
-	(Y/n)
+	Press ENTER for YES.
+	Press 2 for no.
 	"
 	read ans
 	case $ans in
-	[Nn]*) 	break ;;
+	[2Nn]*) 	break ;;
 	*)
  		disable_auto_desktop="yes"
 			break ;;
@@ -1457,9 +1460,9 @@ copy_grub_packages () {
 
 
 if [[ -n "$grub_package" ]] ; then
-	grub_opt=$"c) Copy grub packages to /target and install bootloader"
+	grub_opt=$"1) Copy grub packages to /target and install bootloader"
 elif [[ -n "$grub_dev" ]] ; then
-	grub_opt=$"i) Install bootloader and finish the installation"
+	grub_opt=$"2) Install bootloader and finish the installation"
 fi
 
 while true ; do
@@ -1470,17 +1473,17 @@ while true ; do
 	
 	$grub_dev_message
 	
-	Choices (enter letter)
+	Choices (enter number)
 		${grub_opt}
-		n) Continue without a bootloader.
-		x) Abort the installation and exit.
+		3) Continue without a bootloader.
+		4) Abort the installation and exit.
 "
 	read ans
 	case "$ans" in
-		c) copy_grub_packages ; break ;;
-		i) install_grub ; break ;;
-		n) break ;;
-		x) cleanup ; exit 0 ;;
+		1) copy_grub_packages ; break ;;
+		2) install_grub ; break ;;
+		3) break ;;
+		4) cleanup ; exit 0 ;;
 	esac
 done
 
@@ -1557,11 +1560,13 @@ if [ "$oldname" != "$newname" ]; then
 	
 	while true; do
 		echo $"
- Change the new user's password? (Y/n)
+ Change the new user's password?
+   Press ENTER for YES.
+   Press 2 for no.
 "
 		read ans
 		case $ans in
-			[Nn]*) break ;;
+			[2Nn]*) break ;;
 			*)  # Redirect stderr from the error log to the screen, 
 				# so we can see the prompts from passwd
 				exec 2>&1
@@ -1590,17 +1595,17 @@ while true; do
  account. 
     
  Select one (Enter a, b, or c):
-	a) Disable sudo (recommended)
-	b) Permit sudo for new user (and keep root account.)
-	c) Use sudo as default for new user (and disable root account.)
-	d) Use sudo only for shutdown (and keep root account.)
+	1) Disable sudo (recommended)
+	2) Permit sudo for new user (and keep root account.)
+	3) Use sudo as default for new user (and disable root account.)
+	4) Use sudo only for shutdown (and keep root account.)
     "
 		read ans
 		case $ans in
-			[Aa]) break ;;
-			[Bb]) sudoconfig="TRUE" ; break ;;
-			[Cc]) sudo_is_default="TRUE" ; break ;;
-			[Dd]) sudo_shutdown="TRUE" ; break ;;
+			[1Aa]) break ;;
+			[2Bb]) sudoconfig="TRUE" ; break ;;
+			[3Cc]) sudo_is_default="TRUE" ; break ;;
+			[4Dd]) sudo_shutdown="TRUE" ; break ;;
 		esac
 	done
 
@@ -1683,11 +1688,13 @@ fi
 	while true; do
 		echo -n $"
  Change root password?
- (yes or no)
+   Press ENTER for YES.
+   Press 2 for no.
 "
 		read ans
 		case $ans in
-		[Yy]*)
+		[2Nn]*) break ;;
+		*)
 			# Redirect stderr from the error log to the screen, 
 			# so we can see the prompts from passwd
 			exec 2>&1
@@ -1696,7 +1703,6 @@ fi
 			# Resume logging errors in file
 			exec 2>>"$error_log"
 			break ;;
-		[Nn]*) break ;;
 		esac
 	done
 fi
